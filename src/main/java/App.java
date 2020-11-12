@@ -1,5 +1,7 @@
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class manage the cinema rooms
@@ -73,6 +75,13 @@ public class App {
         int cols = 0;
         System.out.print("Insert a name for the new cinema room: ");
         String name = this.scanner.next();
+        Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(name);
+
+        if (m.find()){
+            System.out.println("Error! Insert a name without special character");
+            return;
+        }
 
         if (this.rooms.containsKey(name)){
             System.out.println("Room name already exists. Choose a different one!");
@@ -88,6 +97,7 @@ public class App {
                 cols = this.scanner.nextInt();
                 exit = true;
             }catch (Exception e){
+                this.scanner.nextLine();
                 System.out.println("Error! Enter valid numbers!");
             }
         }while (!exit);
@@ -123,6 +133,7 @@ public class App {
                 c = this.scanner.nextInt();
                 exit = true;
             }catch (Exception e){
+                this.scanner.nextLine();
                 System.out.println("Error! Enter valid numbers!");
             }
         }while (!exit);
