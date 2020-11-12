@@ -5,6 +5,14 @@ plugins {
 group 'org.example'
 version '1.0-SNAPSHOT'
 
+//create a single Jar with all dependencies
+jar {
+    manifest {
+        attributes 'Main-Class': 'Main'
+    }
+}
+
+
 repositories {
     mavenCentral()
 }
