@@ -37,21 +37,13 @@ public class App {
                         this.currentRoom = this.selectRoom();
                         break;
                     case 3:
-                        if (this.currentRoom != null){
-                            this.currentRoom.printSeat();
-                        }else {
-                            System.out.println("Error! Select a cinema room first");
-                        }
+                        printSeat();
                         break;
                     case 4:
-                        this.bookSeat(this.currentRoom);
+                        this.bookSeat();
                         break;
                     case 5:
-                        if (this.currentRoom != null){
-                            this.currentRoom.showMetrics();
-                        }else {
-                            System.out.println("Error! Select a cinema room first");
-                        }
+                        showMetrics();
                         break;
                     case 6:
                         printMenu();
@@ -107,20 +99,19 @@ public class App {
             return;
         }
 
-        CinemaRoom room = new CinemaRoom(name, rows, cols);
+        CinemaRoom room = new CinemaRoom(rows, cols);
         this.rooms.put(name, room);
         System.out.println("Room created!");
     }
 
     /**
      * Allow the user to insert the row and col for a specific seat
-     * @param room selected from the user
      */
-    private void bookSeat(CinemaRoom room){
+    private void bookSeat(){
         boolean exit = false;
         int r = 0;
         int c = 0;
-        if (room == null){
+        if (this.currentRoom == null){
             System.out.println("Error! Select a cinema room first");
             return;
         }
@@ -138,8 +129,9 @@ public class App {
             }
         }while (!exit);
 
-        room.bookSeat(r, c);
-
+        if(this.currentRoom.bookSeat(r, c)){
+            System.out.println("Seat Reserved!");
+        }
     }
 
     /**
@@ -156,6 +148,58 @@ public class App {
         return room;
     }
 
+    /**
+     * Print room seats
+     */
+    private void printSeat() {
+        if (this.currentRoom == null) {
+            System.out.println("Error! Select a cinema room first");
+            return;
+        }
+        int[][] seats = this.currentRoom.getSeats();
+        System.out.println("\nROOM ENTRANCE HERE");
+        System.out.println("------------------");
+        for (int i = 0; i < seats[0].length; i++) {
+            System.out.print("\tC" + i);
+        }
+        System.out.println();
+        for (int i = 0; i < seats.length; i++) {
+            System.out.print("R" + i + "\t");
+            for (int j = 0; j < seats[0].length; j++) {
+                if (seats[i][j] == 0){
+                    System.out.print("A\t");
+                }else {
+                    System.out.print("R\t");
+                }
+            }
+            System.out.println();
+        }
+        System.out.println("------------------");
+        System.out.println("----SCREEN HERE---");
+    }
+
+    /**
+     * Prints the following metrics:
+     *  - Number of purchased tickets
+     *  - Percentage occupied
+     *  - Current income (sum of reserved tickets)
+     *  - Potential total income (sum of all available and reserved tickets)
+     */
+    public void showMetrics(){
+        if (this.currentRoom == null) {
+            System.out.println("Error! Select a cinema room first");
+            return;
+        }
+        System.out.printf("\nNumber of purchased tickets: %d", this.currentRoom.getPurchasedTickets());
+        System.out.printf("\nPercentage occupied: %.2f", (this.currentRoom.getPurchasedTickets() * 100.00) / this.currentRoom.getCapacity());
+        System.out.printf("\nCurrent income: $ %.2f", this.currentRoom.getIncome());
+        System.out.printf("\nPotential total income: $ %.2f \n", this.currentRoom.getPotentialIncome());
+
+    }
+
+    /**
+     * Print actions menu
+     */
     private static void printMenu(){
         System.out.println("\nAllowed Actions");
         System.out.println("-------------------------");
